@@ -49,6 +49,7 @@ jobs:
         working-directory: apps/web
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_WEB_PROJECT_ID }}
         run: |
           rm -rf .vercel
           if [ "${GITHUB_REF}" = "refs/heads/main" ]; then
@@ -61,6 +62,7 @@ jobs:
         working-directory: apps/web
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_WEB_PROJECT_ID }}
         run: |
           if [ "${GITHUB_REF}" = "refs/heads/main" ]; then
             npx vercel build --prod --token $VERCEL_TOKEN
@@ -72,6 +74,7 @@ jobs:
         working-directory: apps/web
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_WEB_PROJECT_ID }}
         run: |
           if [ "${GITHUB_REF}" = "refs/heads/main" ]; then
             npx vercel deploy --prebuilt --prod --token $VERCEL_TOKEN
@@ -102,6 +105,7 @@ jobs:
         working-directory: apps/api
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_API_PROJECT_ID }}
         run: |
           rm -rf .vercel
           if [ "${GITHUB_REF}" = "refs/heads/main" ]; then
@@ -114,6 +118,7 @@ jobs:
         working-directory: apps/api
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_API_PROJECT_ID }}
         run: |
           if [ "${GITHUB_REF}" = "refs/heads/main" ]; then
             npx vercel build --prod --token $VERCEL_TOKEN
@@ -125,6 +130,7 @@ jobs:
         working-directory: apps/api
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_API_PROJECT_ID }}
         run: |
           if [ "${GITHUB_REF}" = "refs/heads/main" ]; then
             npx vercel deploy --prebuilt --prod --token $VERCEL_TOKEN
