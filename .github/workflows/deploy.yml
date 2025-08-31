@@ -71,6 +71,7 @@ jobs:
           else
             npx vercel build --token $VERCEL_TOKEN
           fi
+        shell: bash
 
       - name: Deploy (vercel)
         working-directory: apps/web
@@ -84,6 +85,7 @@ jobs:
           else
             npx vercel deploy --prebuilt --token $VERCEL_TOKEN
           fi
+        shell: bash
 
   deploy-api:
     needs: changes
@@ -130,6 +132,7 @@ jobs:
           else
             npx vercel build --token $VERCEL_TOKEN
           fi
+        shell: bash
 
       - name: Deploy (vercel)
         working-directory: apps/api
@@ -143,3 +146,4 @@ jobs:
           else
             npx vercel deploy --prebuilt --token $VERCEL_TOKEN
           fi
+        shell: bash
