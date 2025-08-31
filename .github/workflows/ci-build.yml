@@ -53,6 +53,14 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
         run: npx vercel pull --yes --environment=preview --token $VERCEL_TOKEN
 
+      - name: Print working directory
+        run: pwd
+        working-directory: apps/web
+
+      - name: List files
+        run: ls -la
+        working-directory: apps/web
+
       - name: Build (vercel)
         if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         working-directory: apps/web
@@ -99,6 +107,14 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_API_PROJECT_ID }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
         run: npx vercel pull --yes --environment=preview --token $VERCEL_TOKEN
+
+      - name: Print working directory
+        run: pwd
+        working-directory: apps/api
+
+      - name: List files
+        run: ls -la
+        working-directory: apps/api
 
       - name: Build (vercel)
         if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
