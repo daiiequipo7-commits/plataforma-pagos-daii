@@ -1,0 +1,101 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: CI Build (no deploy)
+
+on:
+  pull_request:
+    branches: [develop, main]
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      web: ${{ steps.filter.outputs.web }}
+      api: ${{ steps.filter.outputs.api }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            web:
+              - 'apps/web/**'
+              - 'packages/**'
+              - 'apps/web/pnpm-lock.yaml'
+            api:
+              - 'apps/api/**'
+              - 'packages/**'
+              - 'apps/api/pnpm-lock.yaml'
+
+  build-web:
+    needs: changes
+    if: ${{ needs.changes.outputs.web == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # pnpm (web)
+      - run: corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: apps/web/pnpm-lock.yaml
+      - name: Install deps (web)
+        working-directory: apps/web
+        run: pnpm install --frozen-lockfile
+
+      - name: Vercel pull (preview)
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        working-directory: apps/web
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: npx vercel pull --yes --environment=preview --token $VERCEL_TOKEN
+
+      - name: Build (vercel)
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        working-directory: apps/web
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: npx vercel build --token $VERCEL_TOKEN
+
+      - name: Build (fallback sin secrets)
+        if: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
+        working-directory: apps/web
+        run: pnpm run build
+
+  build-api:
+    needs: changes
+    if: ${{ needs.changes.outputs.api == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # pnpm (api)
+      - run: corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: apps/api/pnpm-lock.yaml
+      - name: Install deps (api)
+        working-directory: apps/api
+        run: pnpm install --frozen-lockfile
+
+      - name: Vercel pull (preview)
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        working-directory: apps/api
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: npx vercel pull --yes --environment=preview --token $VERCEL_TOKEN
+
+      - name: Build (vercel)
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        working-directory: apps/api
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: npx vercel build --token $VERCEL_TOKEN
+
+      - name: Build (fallback sin secrets)
+        if: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
+        working-directory: apps/api
+        run: pnpm run build
