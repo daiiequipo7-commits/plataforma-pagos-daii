@@ -56,7 +56,7 @@ jobs:
         working-directory: apps/web
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        run: npx vercel build --token $VERCEL_TOKEN --project plataforma-pagos-daii-web
+        run: npx vercel build --token $VERCEL_TOKEN
 
       - name: Build (fallback sin secrets)
         if: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
@@ -93,7 +93,7 @@ jobs:
         working-directory: apps/api
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        run: npx vercel build --token $VERCEL_TOKEN --project plataforma-pagos-daii
+        run: npx vercel build --token $VERCEL_TOKEN
 
       - name: Build (fallback sin secrets)
         if: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
