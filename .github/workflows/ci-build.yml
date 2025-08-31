@@ -4,6 +4,10 @@ name: CI Build (no deploy)
 on:
   pull_request:
     branches: [develop, main]
+    paths:
+      - 'apps/web/**'
+      - 'apps/api/**'
+      - '.github/workflows/**'
 
 jobs:
   changes:
@@ -28,7 +32,7 @@ jobs:
 
   build-web:
     needs: changes
-    if: ${{ needs.changes.outputs.web == 'true' }}
+    if: ${{ needs.changes.outputs.web == 'true' || github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -83,7 +87,7 @@ jobs:
 
   build-api:
     needs: changes
-    if: ${{ needs.changes.outputs.api == 'true' }}
+    if: ${{ needs.changes.outputs.api == 'true' || github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
